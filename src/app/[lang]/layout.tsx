@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getDictionary } from "./dictionaries";
+import Header from "@/components/Header";
 import "./globals.css";
+import Footer from "@/components/Footer";
 
 export async function generateMetadata(): Promise<Metadata> {
   const dict = await getDictionary();
@@ -19,7 +21,14 @@ export default async function RootLayout({
 
   return (
     <html lang={lang}>
-      <body className="min-h-screen">{children}</body>
+      <body >
+        <Header></Header>
+          <main className="min-h-screen">
+            {children}
+          </main>
+          <Footer></Footer>
+      </body>
+
     </html>
   );
 }
