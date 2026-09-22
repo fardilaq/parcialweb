@@ -8,7 +8,7 @@ export default async function Page() {
   return (
     <div className="flex items-center justify-between">
       <h1>{dict.welcome} {dict.profile}</h1>
-      <ChangeLangSelect />
+      <ChangeLangSelect label={dict.language} es={dict.spanish} en={dict.english} />
     </div>
   )
 }

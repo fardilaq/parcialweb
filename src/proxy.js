@@ -2,22 +2,37 @@ import { NextResponse } from "next/server";
 
 const locales = ["es", "en"];
 const defaultLocale = "es";
+const COOKIE = "NEXT_LOCALE";
 
 function getLocale(request) {
+  const guardado = request.cookies.get(COOKIE)?.value;
+  if (locales.includes(guardado)) return guardado;
+
   const acceptLanguage = request.headers.get("accept-language") ?? "";
-  const preferred = acceptLanguage.split(",")[0]?.split("-")[0]?.toLowerCase();
-  return locales.includes(preferred) ? preferred : defaultLocale;
+  const preferido = acceptLanguage.split(",")[0]?.split("-")[0]?.toLowerCase();
+  return locales.includes(preferido) ? preferido : defaultLocale;
 }
 
 export function proxy(request) {
+  const { pathname } = request.nextUrl;
+  const localeEnRuta = locales.find(
+    (l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`)
+  );
+
+  if (localeEnRuta) {
+    const response = NextResponse.next();
+    response.cookies.set(COOKIE, localeEnRuta, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+    return response;
+  }
+
   const locale = getLocale(request);
-  const url = request.nextUrl.clone();
-  url.pathname = `/${locale}`;
-  return NextResponse.redirect(url);
+  request.nextUrl.pathname = `/${locale}${pathname === "/" ? "" : pathname}`;
+  return NextResponse.redirect(request.nextUrl);
 }
 
 export const config = {
-  // Solo la raiz "/" necesita deteccion de idioma; el resto de la app
-  // (paginas de series) no esta internacionalizado.
-  matcher: ["/"],
+  matcher: ["/((?!_next|api|favicon.ico|.*\\..*).*)"],
 };

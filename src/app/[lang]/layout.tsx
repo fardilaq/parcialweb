@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
+import { getDictionary } from "./dictionaries";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "Parcial Web",
-  description: "Parcial 1 de Web",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const dict = await getDictionary();
+  return { title: dict.title, description: dict.description };
+}
 
-export default function RootLayout({
+export async function generateStaticParams() {
+  return [{ lang: "es" }, { lang: "en" }];
+}
+
+export default async function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+  params,
+}: LayoutProps<"/[lang]">) {
+  const { lang } = await params;
+
   return (
-    <html lang="es">
-      <body className="min-h-screen">
-        {children}
-      </body>
+    <html lang={lang}>
+      <body className="min-h-screen">{children}</body>
     </html>
   );
 }

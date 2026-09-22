@@ -1,20 +1,31 @@
-'use client';
+"use client";
 
-import { useParams, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from "next/navigation";
 
-export default function ChangeLangButton() {
-  const { lang } = useParams<{ lang: string }>();
+type Props = { label: string; es: string; en: string };
+
+export default function ChangeLangSelect({ label, es, en }: Props) {
+  const pathname = usePathname();
   const router = useRouter();
+  const actual = pathname.split("/")[1];
+
+  function cambiarIdioma(nuevo: string) {
+    const segmentos = pathname.split("/");
+    segmentos[1] = nuevo;
+    router.push(segmentos.join("/"));
+  }
 
   return (
-    <select
-    className="bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 "
-      id="opciones"
-      value={lang}
-      onChange={(e) => router.push(`/${e.target.value}`)}
-    >
-      <option value="en">English</option>
-      <option value="es">Spanish</option>
-    </select>
+    <label className="flex items-center gap-2">
+      {label}
+      <select
+        className="bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        value={actual}
+        onChange={(e) => cambiarIdioma(e.target.value)}
+      >
+        <option value="es">{es}</option>
+        <option value="en">{en}</option>
+      </select>
+    </label>
   );
 }
