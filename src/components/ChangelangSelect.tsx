@@ -2,9 +2,9 @@
 
 import { usePathname, useRouter } from "next/navigation";
 
-type Props = { label: string; es: string; en: string };
+type Props = {es: string; en: string };
 
-export default function ChangeLangSelect({ label, es, en }: Props) {
+export default function ChangeLangSelect({ es, en }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const actual = pathname.split("/")[1];
@@ -17,7 +17,6 @@ export default function ChangeLangSelect({ label, es, en }: Props) {
 
   return (
     <label className="flex items-center gap-2">
-      {label}
       <select
         className="bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         value={actual}

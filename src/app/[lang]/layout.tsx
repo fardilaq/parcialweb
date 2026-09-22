@@ -23,7 +23,7 @@ export default async function RootLayout({
     <html lang={lang}>
       <body >
         <Header></Header>
-          <main className="min-h-screen">
+          <main className="min-h-screen bg-[#F5F5F0]">
             {children}
           </main>
           <Footer></Footer>
